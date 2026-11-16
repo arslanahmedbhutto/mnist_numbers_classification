@@ -48,11 +48,22 @@ st.write("Draw a digit from **0 to 9**, or upload a photo of one. The model trai
 tab_draw, tab_upload = st.tabs(["✏️ Draw", "📤 Upload an image"])
 gray = None
 
+
 with tab_draw:
-    canvas = st_canvas(
-        stroke_width=18, stroke_color="#FFFFFF", background_color="#000000",
-        width=280, height=280, drawing_mode="freedraw",return_image_data=True, key="canvas",
+    canvas_kwargs = dict(
+        stroke_width=18,
+        stroke_color="#FFFFFF",
+        background_color="#000000",
+        width=280,
+        height=280,
+        drawing_mode="freedraw",
+        key="canvas",
     )
+    try:
+        canvas = st_canvas(**canvas_kwargs, return_image_data=True)
+    except TypeError:
+        canvas = st_canvas(**canvas_kwargs)
+
     st.caption("Draw big, in the middle. Use the 🗑️ icon under the box to clear it.")
     if canvas.image_data is not None:
         gray = np.array(canvas.image_data)[:, :, 0]                    # red channel = white strokes
